@@ -1,5 +1,5 @@
 <?php
-namespace Swoole\Helper;
+namespace SwoolePool\Helper;
 
 use Closure;
 use Exception;

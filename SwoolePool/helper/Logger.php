@@ -1,5 +1,5 @@
 <?php
-namespace lib\Swoole\Helpers;
+namespace SwoolePool\Helpers;
 
 class Logger
 {

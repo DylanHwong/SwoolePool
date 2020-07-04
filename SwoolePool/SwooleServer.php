@@ -168,7 +168,7 @@ trait SwooleServer
             'manager_pid' => $server->manager_pid,
         ]));
 	
-	Container::Instance();
+	    Container::Instance();
         swoole_set_process_name("swoole" . $this->http_config['port']);//给进程起别名，方便监听服务
     }
 
