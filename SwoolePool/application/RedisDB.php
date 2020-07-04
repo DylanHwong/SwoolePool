@@ -3,10 +3,10 @@
  * redis 操作类
  * @date 2020.01.04 by Winst.
  */
-namespace Swoole\Application;
+namespace SwoolePool\Application;
 
 use RuntimeException;
-use Swoole\Core\RedisPool;
+use SwoolePool\Core\RedisPoolSingleton;
 
 class RedisDB
 {
@@ -16,7 +16,7 @@ class RedisDB
     public function __construct()
     {
         //获取连接池对象，取出redis连接
-        $this->pool = RedisPool::getInstance()->getPool();
+        $this->pool = RedisPoolSingleton::getInstance()->getPool();
         $this->redis = $this->pool->get();
     }
 

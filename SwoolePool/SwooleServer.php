@@ -1,5 +1,5 @@
 <?php
-namespace Swoole;
+namespace SwoolePool;
 
 trait SwooleServer
 {
@@ -52,7 +52,7 @@ trait SwooleServer
         $this->application = 'application';
         $this->pid_file = '/var/log/swoole_pid_' . $this->http_config['port'] . '.log';
         $this->log_file = '/var/log/swoole_' . $this->http_config['port'] . '.log';
-echo 111;
+
     }
 
     /************************************************** 设置函数 ***************************************************/
