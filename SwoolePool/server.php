@@ -7,8 +7,7 @@ namespace SwoolePool;
 
 use SwoolePool\Core\RedisPoolSingleton;
 
-define('ROOT_DIR', dirname(__DIR__) . '/' );
-require_once __DIR__ . '/helper/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 class HttpServer
 {
