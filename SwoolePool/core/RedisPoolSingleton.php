@@ -3,7 +3,7 @@
  * 协程swoole连接池使用
  * 2020.07.02 by Winst.
  */
-namespace SwoolePool\Core;
+namespace Core;
 
 use Swoole\Coroutine;
 use Swoole\Database\RedisConfig;

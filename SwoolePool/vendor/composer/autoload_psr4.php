@@ -6,7 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'SwoolePool\\' => array($baseDir . '/'),
     'Helper\\' => array($baseDir . '/helper'),
     'Core\\' => array($baseDir . '/core'),
     'Application\\' => array($baseDir . '/application'),

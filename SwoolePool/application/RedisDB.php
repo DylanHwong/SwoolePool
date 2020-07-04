@@ -3,7 +3,7 @@
  * redis 操作类
  * @date 2020.01.04 by Winst.
  */
-namespace SwoolePool\Application;
+namespace Application;
 
 use RuntimeException;
 use SwoolePool\Core\RedisPoolSingleton;

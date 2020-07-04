@@ -22,7 +22,7 @@ class HttpServer
             'passwd' => 'e5Q0N3dfeS4h6c5R',
         ];
         //每个worker，启动redis连接池
-        RedisPoolSingleton::getInstance($config);
+        #RedisPoolSingleton::getInstance($config);
 
     }
 
