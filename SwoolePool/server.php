@@ -5,8 +5,9 @@
  */
 namespace SwoolePool;
 
-use SwoolePool\Core\RedisPoolSingleton;
-use SwoolePool\Helper\Container;
+use Core\RedisPoolSingleton;
+use Helper\Container;
+use Src\SwooleServer;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -22,13 +23,13 @@ class HttpServer
             'passwd' => 'e5Q0N3dfeS4h6c5R',
         ];
         //每个worker，启动redis连接池
-        #RedisPoolSingleton::getInstance($config);
+        RedisPoolSingleton::getInstance($config);
 
     }
 
     public function custom($data)
     {
-        $result = $this->dispatch($data['data']);
+        return $this->dispatch($data);
     }
 }
 $http_server = new HttpServer;

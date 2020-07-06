@@ -195,7 +195,7 @@ class Container
                 } else {
                     continue;
                 }
-                $args[$name] = $value;
+                $args[] = $value;
             }
         }
 

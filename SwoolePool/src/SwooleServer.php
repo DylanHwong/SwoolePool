@@ -1,6 +1,8 @@
 <?php
 namespace Src;
 
+use Helper\Container;
+
 trait SwooleServer
 {
     private $pid_file; //master pid和manager pid保存目录
@@ -24,6 +26,8 @@ trait SwooleServer
         'backlog'            => 2000, //最多有多少个连接等待
         'task_max_request'   => 10000,//task进程的最大任务数
         'buffer_output_size' => 8 * 1024 *1024,
+	'enable_coroutine' => true,  //开启协程
+	'task_enable_coroutine' => true, //开启task协程
     ];
 
     public function __construct()
@@ -43,13 +47,13 @@ trait SwooleServer
             'reactor_num'     => swoole_cpu_num() * 2, //reactor线程数为cpu核数的2倍
             'worker_num'      => swoole_cpu_num() * 2, //worker进程数为cpu核数的2倍
             'task_worker_num' => swoole_cpu_num() * 2, //task进程数为cpu核数的2倍
-            'host'            => '127.0.0.1',
+            'host'            => '0.0.0.0',
             'port'            => 8901,
             'max_conn'        => $ulimit > 10000 ? 10000 : $ulimit,//增加文件打开数适配
         ]);
 
         //在cli执行文件的目录下预设文件
-        $this->application = 'application';
+        $this->application = 'Application';
         $this->pid_file = '/var/log/swoole_pid_' . $this->http_config['port'] . '.log';
         $this->log_file = '/var/log/swoole_' . $this->http_config['port'] . '.log';
 
@@ -130,7 +134,7 @@ trait SwooleServer
     public final function dispatch($data)
     {
         $abstract = $this->application . DIRECTORY_SEPARATOR . $data['c'];//用斜杠/的方式连接，用反斜杠\会有问题
-        $class_name = '\\' . $this->application . '\\' . ucfirst($data['c']);//自动加载用反斜杠
+        $class_name = '' . $this->application . '\\' . ucfirst($data['c']);//自动加载用反斜杠
         try {
             $container = Container::instance();
             if (!$container->hasConcrete($abstract)) {
@@ -138,8 +142,8 @@ trait SwooleServer
             }
             $object = $container->make($abstract);
             $args = $container->buildParameter($object, $data['a'], $data['params']);
-
-            $result = [
+            
+	    $result = [
                 'code' => 0,
                 'data' => call_user_func_array([$object, $data['a']], $args)
             ];
@@ -148,10 +152,8 @@ trait SwooleServer
                 'code' => $e->getCode(),
                 'message' => $e->getMessage()
             ];
-
-            Logger::error($e->getMessage());
+            #Logger::error($e->getMessage());
         }
-
         return $result;
     }
 
@@ -227,7 +229,7 @@ trait SwooleServer
         }
 
         $response->header("Content-Type", "application/json; charset=utf-8");
-
+/**
         if ($request->server['request_method'] !== 'POST') {
             $response->end(json_encode([
                 'code' => -1,
@@ -235,25 +237,14 @@ trait SwooleServer
             ]));
             return;
         }
-
-        $data = $request->post ? $request->post : json_decode($request->rawContent(), true);
-
-        //将$fd赋为null，区别于tcp，并把$request->server赋给新的一个变量
-        global $g_c;
-        $g_c['swoole']['fd'] = null;
-        $g_c['swoole']['http_server'] = $request->server;
-
-        if (isset($data['sync']) && $data['sync'] === false) {
-            //异步处理，注意在onTask回调方法里不能使用协程
-            $this->server->task($data);//会触发onFinish回调
-            $response->end(json_encode([
-                'code' => 0,
-                'message' => '任务投递成功'
-            ]));
-        } else {
-            //同步处理，只有php7+及swoole4.2+版本才能使用协程
-            $response->end(EncodeJson($this->custom($data)));
-        }
+*/
+	$data = $request->get ? $request->get : json_decode($request->rawContent(), true);
+#        $data = $request->post ? $request->post : json_decode($request->rawContent(), true);
+	$data['params'] = json_decode($data['params'], 1);
+	$result = $this->custom($data);
+        $response->end(json_encode($result));
+	return;
+        
     }
 
     /*********************************************** swoole控制函数 ************************************************/
@@ -313,6 +304,7 @@ trait SwooleServer
 
     private function start()
     {
+	//\Swoole\Co::set(['hook_flags' => SWOOLE_HOOK_TCP]);
         $this->server = new \Swoole\Http\Server($this->http_config['host'], $this->http_config['port'], SWOOLE_PROCESS, SWOOLE_SOCK_TCP);
         $this->server->set($this->http_config);
         $this->server->on('start',       [$this, 'onStart']);

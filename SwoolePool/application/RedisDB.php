@@ -6,7 +6,7 @@
 namespace Application;
 
 use RuntimeException;
-use SwoolePool\Core\RedisPoolSingleton;
+use Core\RedisPoolSingleton;
 
 class RedisDB
 {
