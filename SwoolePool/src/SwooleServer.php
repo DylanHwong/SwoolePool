@@ -1,5 +1,5 @@
 <?php
-namespace SwoolePool;
+namespace Src;
 
 trait SwooleServer
 {
