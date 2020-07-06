@@ -1,0 +1,10 @@
+{
+    "autoload": {
+    "psr-4": {
+      "Src\\": "src/",
+      "Application\\": "application/",
+      "Core\\": "core/",
+      "Helper\\": "helper/"
+    }
+  }
+}
